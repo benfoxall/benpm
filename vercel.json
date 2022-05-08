@@ -1,8 +1,12 @@
 {
-    "rewrites": [
+    "routes": [
         {
-            "source": "/package/**",
-            "destination": "/index.html"
+            "handle": "filesystem"
+        },
+        {
+            "src": "/(.*)",
+            "status": 200,
+            "dest": "/index.html"
         }
     ]
 }
