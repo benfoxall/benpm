@@ -5,15 +5,23 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "mocha"
   },
   "dependencies": {
+    "@types/mocha": "^9.1.1",
+    "@types/react-syntax-highlighter": "^15.5.1",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-router-dom": "^6.3.0",
     "react-syntax-highlighter": "^15.5.0",
-    "recoil": "^0.7.2"
+    "recoil": "^0.7.2",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^1.3.0",
