@@ -1,6 +1,7 @@
 import {
-  content,
+  contentAtom,
   file,
+  fileListSelector,
   files,
   metaSelector,
   nameAtom,
@@ -35,16 +36,14 @@ export const PackagePage = () => {
           </Boundary>
         </section>
         <section>
-          <nav className="fileList">
-            {files.map((v) => (
-              <a key={v} className={v === file ? "selected" : ""}>
-                {v}
-              </a>
-            ))}
-          </nav>
+          <Boundary>
+            <FileList />
+          </Boundary>
         </section>
         <section>
-          <Highlight>{content}</Highlight>
+          <Boundary>
+            <FileContent />
+          </Boundary>
         </section>
       </section>
     </>
@@ -69,4 +68,27 @@ const Versions = () => {
       ))}
     </nav>
   );
+};
+
+const FileList = () => {
+  const name = useRecoilValue(nameAtom);
+  const version = useRecoilValue(versionAtom);
+
+  const files = useRecoilValue(fileListSelector);
+
+  return (
+    <nav className="fileList">
+      {files.map((f) => (
+        <Link key={f} to={`/package/${name}/v/${version}~${f}`}>
+          {f}
+        </Link>
+      ))}
+    </nav>
+  );
+};
+
+const FileContent = () => {
+  const content = useRecoilValue(contentAtom);
+
+  return <Highlight>{content}</Highlight>;
 };
