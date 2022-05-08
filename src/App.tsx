@@ -1,49 +1,33 @@
-import { useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import { PackagePage } from "./pages/Package";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { RecoilRoot } from "recoil";
+import { Boundary } from "./util/Boundary";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <div className="flex justify-center">
-          <h1 className="font-bold text-2xl text-blue-900">
-            React and Tailwind with Vitejs!
-          </h1>
+    <BrowserRouter>
+      <RecoilRoot>
+        <div className="App">
+          <header>
+            <h1>
+              npm<strong>ls</strong>
+            </h1>
+          </header>
+
+          <hr />
+          <main>
+            <Boundary>
+              <Routes>
+                <Route path="package/*" element={<PackagePage />}></Route>
+                <Route path="*" element={<Home />}></Route>
+              </Routes>
+            </Boundary>
+          </main>
         </div>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {" | "}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
+      </RecoilRoot>
+    </BrowserRouter>
   );
 }
 
