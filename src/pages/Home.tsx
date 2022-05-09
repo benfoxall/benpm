@@ -6,14 +6,13 @@ export const Home = () => {
       <h1>home..</h1>
 
       <nav>
-        <Link to="/package/crypto-js">crypto-js</Link>
-
-        <Link to="/package/@mcap/core">@mcap/core</Link>
-
-        <Link to="/package/@bbc/psammead-styles">@bbc/psammead-styles</Link>
-
-        <Link to="/package/@bbc/psammead-styles/v/8.1.1">
-          @bbc/psammead-styles/v/8.1.1
+        <Link to="/package/lodash">lodash</Link>
+        <Link to="/package/chalk">chalk</Link>
+        <Link to="/package/react">react</Link>
+        <Link to="/package/@babel/runtime">@babel/runtime</Link>
+        <Link to="/package/@polymer/polymer">@polymer/polymer</Link>
+        <Link to="/package/@polymer/polymer/v/2.0.0">
+          @polymer/polymer/v/2.0.0
         </Link>
       </nav>
     </>
