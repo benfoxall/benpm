@@ -1,16 +1,14 @@
 import {
   contentAtom,
-  file,
+  fileAtom,
   fileListSelector,
-  files,
   metaSelector,
   nameAtom,
   useStateFromPath,
   versionAtom,
   versionsSelector,
 } from "../state";
-import Highlight from "react-syntax-highlighter";
-import { Link, useParams } from "react-router-dom";
+import { Navigate, NavLink, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { Boundary } from "../util/Boundary";
 
@@ -24,10 +22,10 @@ export const PackagePage = () => {
 
   return (
     <>
-      <h1>
+      <h3>
         {name}
         <small> {version || ""}</small>
-      </h1>
+      </h3>
 
       <section className="viewer">
         <section>
@@ -54,17 +52,27 @@ const Versions = () => {
   const name = useRecoilValue(nameAtom);
   const version = useRecoilValue(versionAtom);
   const versions = useRecoilValue(versionsSelector);
+  const file = useRecoilValue(fileAtom);
+  const meta = useRecoilValue(metaSelector);
+  const latest = meta["dist-tags"]?.latest;
 
   return (
     <nav className="fileList">
+      {version === undefined && latest && (
+        <Navigate
+          to={`/package/${name}/v/${latest}~package/package.json`}
+          replace={true}
+        />
+      )}
+
       {versions.map((v) => (
-        <Link
+        <NavLink
           key={v}
-          to={`/package/${name}/v/${v}`}
+          to={`/package/${name}/v/${v}${file ? `~${file}` : ""}`}
           className={v === version ? "selected" : ""}
         >
           {v}
-        </Link>
+        </NavLink>
       ))}
     </nav>
   );
@@ -79,9 +87,9 @@ const FileList = () => {
   return (
     <nav className="fileList">
       {files.map((f) => (
-        <Link key={f} to={`/package/${name}/v/${version}~${f}`}>
+        <NavLink key={f} to={`/package/${name}/v/${version}~${f}`}>
           {f}
-        </Link>
+        </NavLink>
       ))}
     </nav>
   );
@@ -90,5 +98,5 @@ const FileList = () => {
 const FileContent = () => {
   const content = useRecoilValue(contentAtom);
 
-  return <Highlight>{content}</Highlight>;
+  return <code>{content}</code>;
 };

@@ -54,6 +54,9 @@ export const versionsSelector = selector({
   get({ get }) {
     const meta = get(metaSelector);
 
+    // console.log("META", meta);
+    // window.meta = meta;
+
     try {
       return Object.keys(meta.versions);
     } catch {
@@ -62,8 +65,8 @@ export const versionsSelector = selector({
   },
 });
 
-export const packageContent = selector({
-  key: "package-content",
+export const packageContents = selector({
+  key: "package-contents",
   async get({ get }) {
     const meta = get(metaSelector);
     const v = get(versionAtom);
@@ -77,6 +80,9 @@ export const packageContent = selector({
       const cont = inflate(new Uint8Array(buf));
       const files = await untar(cont.buffer);
 
+      // console.log("files", files);
+      // window.files = files;
+
       return files;
     } catch (e) {
       console.error(e);
@@ -88,16 +94,18 @@ export const packageContent = selector({
 export const fileListSelector = selector<string[]>({
   key: "file-list",
   get({ get }) {
-    const cont = get(packageContent);
+    const contents = get(packageContents);
 
-    return cont.map((file: any) => file.name as string);
+    return contents
+      .filter((file: any) => file.type === "0") // files only
+      .map((file: any) => file.name);
   },
 });
 
 export const contentAtom = selector<string>({
   key: "file-content",
   get({ get }) {
-    const content = get(packageContent);
+    const content = get(packageContents);
     const file = get(fileAtom);
 
     for (const f of content) {
@@ -109,12 +117,3 @@ export const contentAtom = selector<string>({
     return "";
   },
 });
-
-export const packageName = "@foo/thing";
-export const versions = ["0.0.1", "0.0.2", "0.2.1", "0.3.3"];
-
-export const files = ["foo.txt", "bar.js"];
-// export const content = "const blah = 1234;";
-
-export const version = "0.0.2";
-export const file = "bar.js";
