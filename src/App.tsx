@@ -1,13 +1,13 @@
 import "./App.css";
 import { PackagePage } from "./pages/Package";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { RecoilRoot } from "recoil";
 import { Boundary } from "./util/Boundary";
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <RecoilRoot>
         <div className="App">
           <Boundary>
@@ -18,7 +18,7 @@ function App() {
           </Boundary>
         </div>
       </RecoilRoot>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
