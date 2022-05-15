@@ -20,7 +20,8 @@
     "react-router-dom": "^6.3.0",
     "react-syntax-highlighter": "^15.5.0",
     "recoil": "^0.7.2",
-    "ts-node": "^10.7.0"
+    "ts-node": "^10.7.0",
+    "vite-plugin-rewrite-all": "^0.1.2"
   },
   "devDependencies": {
     "@types/chai": "^4.3.1",
