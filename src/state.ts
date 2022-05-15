@@ -38,6 +38,7 @@ export const versionAtom = atom<string | undefined>({
 
 export const fileAtom = atom<string | undefined>({
   key: "file",
+  default: undefined,
 });
 
 export const identifierSelector = selector({
@@ -138,6 +139,6 @@ export const contentSelector = selector({
       }
     }
 
-    return "";
+    return null;
   },
 });

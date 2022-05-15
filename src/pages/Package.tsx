@@ -12,12 +12,14 @@ import {
   useRecoilValueLoadable,
   useRecoilValue,
   useSetRecoilState,
+  useRecoilState,
 } from "recoil";
 import {
   contentSelector,
   fileAtom,
   filesSelector,
   identifierSelector,
+  packageFiles,
   useStateFromParams,
   versionAtom,
   versionLatestSelector,
@@ -98,19 +100,20 @@ const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
   base = "",
 }) => {
   const entries = useMemo(() => Object.entries(files), [files]);
-  const { hash } = useLocation();
+  const file = useRecoilValueLoadable(fileAtom).valueMaybe();
 
   return (
     <nav>
       {entries.map(([name, content]) => {
         if (content === true) {
           const target = `#${base}${name}`;
+          const h = `#${file}`;
 
           return (
             <Link
               key={name}
               to={target}
-              className={target === hash ? styles.active : ""}
+              className={target === h ? styles.active : ""}
             >
               {name}
             </Link>
@@ -131,12 +134,19 @@ const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
 const FileContent = () => {
   const { hash } = useLocation();
 
+  const files = useRecoilValue(packageFiles);
   const setFile = useSetRecoilState(fileAtom);
-  useEffect(() => setFile(hash?.slice(1)), [hash]);
+  useEffect(() => {
+    if (hash) {
+      setFile(hash.slice(1));
+    } else {
+      setFile(files.find((f) => f.type === "0")?.name);
+    }
+  }, [hash, files]);
 
-  const content = useRecoilValueLoadable(contentSelector);
+  const content = useRecoilValueLoadable(contentSelector).valueMaybe();
 
-  const code = content.valueMaybe() || "";
+  const code = content || "";
 
   return (
     <main className={styles.content}>
