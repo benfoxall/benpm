@@ -6,7 +6,7 @@ import {
   useMemo,
   lazy,
 } from "react";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
   useRecoilValue,
@@ -18,9 +18,6 @@ import {
   fileAtom,
   filesSelector,
   identifierSelector,
-  metaSelector,
-  nameAtom,
-  packageFiles,
   useStateFromParams,
   versionAtom,
   versionLatest,
@@ -101,12 +98,21 @@ const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
   base = "",
 }) => {
   const entries = useMemo(() => Object.entries(files), [files]);
+  const { hash } = useLocation();
+
+  console.log(hash);
   return (
     <nav>
       {entries.map(([name, content]) => {
         if (content === true) {
+          const target = `#${base}${name}`;
+
           return (
-            <Link key={name} to={`#${base}${name}`}>
+            <Link
+              key={name}
+              to={target}
+              className={target === hash ? styles.active : ""}
+            >
               {name}
             </Link>
           );

@@ -2,6 +2,8 @@ import { FC, useEffect, useState } from "react";
 import "./code.scss";
 import Worker from "./codeWorker.js?worker";
 
+const worker = new Worker();
+
 const CodeFormat: FC<{ children: string }> = ({ children }) => {
   const [formatted, setFormatted] = useState<string>();
 
@@ -9,9 +11,8 @@ const CodeFormat: FC<{ children: string }> = ({ children }) => {
     setFormatted(undefined);
     if (!children) return;
 
-    const worker = new Worker();
+    // todo, use pool
     worker.postMessage(children);
-
     worker.addEventListener(
       "message",
       ({ data }) => {
@@ -19,8 +20,6 @@ const CodeFormat: FC<{ children: string }> = ({ children }) => {
       },
       { once: true }
     );
-
-    () => worker.terminate();
   }, [children]);
 
   return (
