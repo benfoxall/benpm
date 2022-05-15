@@ -1,4 +1,11 @@
-import { FC, MouseEventHandler, useEffect, useMemo } from "react";
+import {
+  FC,
+  MouseEventHandler,
+  Suspense,
+  useEffect,
+  useMemo,
+  lazy,
+} from "react";
 import { Navigate, useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
@@ -22,6 +29,8 @@ import {
 import { Boundary } from "../util/Boundary";
 import { Directory } from "../util/path";
 import styles from "./Package.module.css";
+
+const CodeFormat = lazy(() => import("../components/CodeFormat"));
 
 const onMouseDown: MouseEventHandler = (e) => {
   if (e.detail > 1) e.preventDefault();
@@ -122,10 +131,16 @@ const FileContent = () => {
 
   const content = useRecoilValueLoadable(contentSelector);
 
+  const code = content.valueMaybe() || "";
+
   return (
     <main className={styles.content}>
       <pre>
-        <code>{content.valueMaybe() || ""}</code>
+        <code>
+          <Suspense fallback={<>{code}</>}>
+            <CodeFormat>{code}</CodeFormat>
+          </Suspense>
+        </code>
       </pre>
     </main>
   );

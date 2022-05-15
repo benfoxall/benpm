@@ -11,6 +11,7 @@ import {
 import { Navigate, NavLink, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { Boundary } from "../util/Boundary";
+import CodeFormat from "../components/CodeFormat";
 
 export const PackageOld = () => {
   const { scope, name, version } = useParams();
@@ -99,5 +100,9 @@ const FileList = () => {
 const FileContent = () => {
   const content = useRecoilValue(contentAtom);
 
-  return <code>{content}</code>;
+  return (
+    <code>
+      <CodeFormat>{content}</CodeFormat>
+    </code>
+  );
 };
