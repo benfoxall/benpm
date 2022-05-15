@@ -7,17 +7,17 @@ export const Home = () => {
 
   return (
     <div className={styles.container}>
-      <h1>NPM LS</h1>
+      <h1>Npm files</h1>
 
-      <p>View NPM package contents</p>
+      <p>View contents of npm packages</p>
 
       <p className={styles.instruction}>
         <span>
-          npm<span className={styles.before}>j</span>s.com/package/{name}
+          npm<span className={styles.before}>js</span>.com/package/{name}
         </span>
         <span style={{ marginLeft: "3.5rem" }}>↓</span>
         <Link to={`/package/${name}`}>
-          npm<span className={styles.after}>l</span>s.com/package/{name}
+          npm<span className={styles.after}>files</span>.com/package/{name}
         </Link>
       </p>
     </div>
