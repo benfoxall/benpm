@@ -1,0 +1,33 @@
+
+.container {
+    padding: 1em;
+
+    h1 {
+        font-weight: 100;
+    }
+
+}
+
+.before {
+    color: red;
+    text-decoration: underline;
+}
+.after {
+    color: green;
+    text-decoration: underline;
+}
+
+
+.instruction {
+    font-size: 2em;
+    display: flex;
+    flex-direction: column;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+}

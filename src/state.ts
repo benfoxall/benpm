@@ -84,7 +84,7 @@ export const versionsSelector = selector({
   },
 });
 
-export const versionLatest = selector({
+export const versionLatestSelector = selector({
   key: "version-latest",
   get({ get }) {
     return get(metaSelector)?.["dist-tags"].latest;
@@ -97,8 +97,10 @@ export const packageFiles = selector<TarFile[]>({
     const meta = get(metaSelector);
     const v = get(versionAtom);
 
+    if (!v) return [];
+
     try {
-      const tarball = meta.versions[v!].dist.tarball;
+      const tarball = meta.versions[v].dist.tarball;
 
       const res = await fetch(tarball);
 

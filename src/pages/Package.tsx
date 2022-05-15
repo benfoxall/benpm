@@ -9,8 +9,8 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import {
-  useRecoilValue,
   useRecoilValueLoadable,
+  useRecoilValue,
   useSetRecoilState,
 } from "recoil";
 import {
@@ -20,7 +20,7 @@ import {
   identifierSelector,
   useStateFromParams,
   versionAtom,
-  versionLatest,
+  versionLatestSelector,
   versionsSelector,
 } from "../state";
 import { Boundary } from "../util/Boundary";
@@ -40,11 +40,17 @@ export const Package = () => {
   return (
     <Boundary>
       <div className={styles.container}>
-        <Header />
+        <Boundary>
+          <Header />
+        </Boundary>
 
-        <FileList />
+        <Boundary>
+          <FileList />
+        </Boundary>
 
-        <FileContent />
+        <Boundary>
+          <FileContent />
+        </Boundary>
       </div>
     </Boundary>
   );
@@ -53,8 +59,8 @@ export const Package = () => {
 const Header = () => {
   const identifier = useRecoilValue(identifierSelector);
   const version = useRecoilValue(versionAtom);
-  const latest = useRecoilValue(versionLatest);
 
+  const latest = useRecoilValueLoadable(versionLatestSelector).valueMaybe();
   const versions = useRecoilValueLoadable(versionsSelector).valueMaybe();
 
   // replace version in url
@@ -100,7 +106,6 @@ const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
   const entries = useMemo(() => Object.entries(files), [files]);
   const { hash } = useLocation();
 
-  console.log(hash);
   return (
     <nav>
       {entries.map(([name, content]) => {
