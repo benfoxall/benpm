@@ -1,7 +1,7 @@
 import "./App.css";
-import { Package } from "./pages/Package";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
+import { Package } from "./pages/Package";
 import { RecoilRoot } from "recoil";
 
 const paths = [
