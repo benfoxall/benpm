@@ -40,17 +40,11 @@ export const Package = () => {
   return (
     <Boundary>
       <div className={styles.container}>
-        <Boundary>
-          <Header />
-        </Boundary>
+        <Header />
 
-        <Boundary>
-          <FileList />
-        </Boundary>
+        <FileList />
 
-        <Boundary>
-          <FileContent />
-        </Boundary>
+        <FileContent />
       </div>
     </Boundary>
   );
