@@ -1,0 +1,71 @@
+.container {
+    display: grid;
+    grid-template-columns: 10em 1fr;
+  
+    position: absolute;
+    left:0px;
+    right:0px;
+    top: 0px;
+    bottom: 0px;
+
+    max-width: 60em;
+    margin: auto;
+
+    gap: 1em;
+    padding: 0 2em;
+}
+
+.head {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em 0
+}
+.head h1 {
+    margin: 0;
+    font-weight: 100;
+}
+
+.fileList {
+    overflow: auto;
+}
+
+.fileList a, .fileList summary {
+    margin: .1em;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+.fileList a:hover, .fileList summary:hover {
+    font-weight: 800;
+}
+
+.fileList nav {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1em;
+    
+}
+
+.content {
+    overflow: auto;
+    font-weight: 100;
+}
+.content pre {
+    white-space: pre-line;
+    margin: 0;
+}
+
+@media (max-width: 600px) { 
+
+    .container {
+        bottom: auto;
+    }
+
+    .fileList, .content {
+        grid-column: 1 / 3;
+        border-top: 1px solid currentColor;
+        padding: 1em
+    }
+ }

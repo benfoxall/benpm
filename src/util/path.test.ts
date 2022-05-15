@@ -1,7 +1,7 @@
 import { suite, test } from "mocha";
 import { assert, expect } from "chai";
 
-import { parsePackage } from "./path";
+import { parsePackage, pathsToHeirachy } from "./path";
 
 suite("cases", () => {
   suite("plain", () => {
@@ -69,6 +69,40 @@ suite("cases", () => {
   suite("edges", () => {
     test("tilda file", () => {
       assert.equal(parsePackage("pkg~file~name.ext").file, "file~name.ext");
+    });
+  });
+});
+
+suite.only("pathsToHeirachy", () => {
+  test("empty list", () => {
+    const result = pathsToHeirachy([]);
+
+    assert.deepEqual(result, {});
+  });
+  test("single file", () => {
+    const result = pathsToHeirachy(["file.txt"]);
+
+    assert.deepEqual(result, { "file.txt": true });
+  });
+
+  test("multi files", () => {
+    const result = pathsToHeirachy(["a.txt", "b.txt"]);
+
+    assert.deepEqual(result, { "a.txt": true, "b.txt": true });
+  });
+
+  test("heirachy", () => {
+    const result = pathsToHeirachy(["dir/a.txt", "dir/b.txt"]);
+
+    assert.deepEqual(result, { dir: { "a.txt": true, "b.txt": true } });
+  });
+
+  test("heirachy", () => {
+    const result = pathsToHeirachy(["dir/a.txt", "dir/b.txt", "top.txt"]);
+
+    assert.deepEqual(result, {
+      "top.txt": true,
+      dir: { "a.txt": true, "b.txt": true },
     });
   });
 });
