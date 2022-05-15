@@ -13,12 +13,13 @@ import { useRecoilValue } from "recoil";
 import { Boundary } from "../util/Boundary";
 
 export const PackageOld = () => {
-  const { "*": path } = useParams();
+  const { scope, name, version } = useParams();
+  // useStateFromPath(scope, name, version);
 
-  useStateFromPath(path);
+  // useStateFromPath(path);
 
-  const name = useRecoilValue(nameAtom);
-  const version = useRecoilValue(versionAtom);
+  // const name = useRecoilValue(nameAtom);
+  // const version = useRecoilValue(versionAtom);
 
   return (
     <>

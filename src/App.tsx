@@ -1,6 +1,7 @@
 import "./App.css";
 import { PackageOld } from "./pages/PackageOld";
 import { Package2 } from "./pages/Package2";
+import { Package } from "./pages/Package";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { RecoilRoot } from "recoil";
@@ -12,21 +13,19 @@ const paths = [
   "package/:name/v/:version",
   "package/@:scope/:name",
   "package/@:scope/:name/v/:version",
+  "dev-:scope-:name-:version",
 ];
 
 function App() {
   return (
     <BrowserRouter>
       <RecoilRoot>
-        <Boundary>
-          <Routes>
-            <Route path="foo" element={<PackageStyled />}></Route>
-            {paths.map((path) => (
-              <Route key={path} path={path} element={<Package2 />}></Route>
-            ))}
-            <Route path="*" element={<Home />}></Route>
-          </Routes>
-        </Boundary>
+        <Routes>
+          {paths.map((path) => (
+            <Route key={path} path={path} element={<Package />} />
+          ))}
+          <Route path="*" element={<Home />} />
+        </Routes>
       </RecoilRoot>
     </BrowserRouter>
   );

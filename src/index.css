@@ -31,3 +31,9 @@ details > summary {
 details[open] > summary {
   list-style-type: '↘ ' ;
 }
+
+select {
+  background: inherit;
+  color: inherit;
+  font-family: 'Fira Mono', monospace;
+}
