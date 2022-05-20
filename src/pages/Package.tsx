@@ -1,32 +1,20 @@
-import {
-  FC,
-  MouseEventHandler,
-  Suspense,
-  useEffect,
-  useMemo,
-  lazy,
-} from "react";
+import { FC, MouseEventHandler, Suspense, useEffect, lazy } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { useRecoilValueLoadable, useRecoilValue } from "recoil";
 import {
-  useRecoilValueLoadable,
-  useRecoilValue,
-  useSetRecoilState,
-  useRecoilState,
-} from "recoil";
-import {
+  useFileFramHash,
+  useStateFromParams,
   contentSelector,
+  identifierSelector,
   fileAtom,
   filesSelector,
-  identifierSelector,
-  packageFiles,
-  useStateFromParams,
   versionAtom,
   versionLatestSelector,
   versionsSelector,
 } from "../state";
 import { Boundary } from "../util/Boundary";
-import { Directory } from "../util/path";
+import { FileEntryList } from "../util/path";
 import styles from "./Package.module.css";
 
 const CodeFormat = lazy(() => import("../components/CodeFormat"));
@@ -36,8 +24,12 @@ const onMouseDown: MouseEventHandler = (e) => {
 };
 
 export const Package = () => {
+  // update state
   const params = useParams();
   useStateFromParams(params);
+
+  const { hash } = useLocation();
+  useFileFramHash(hash);
 
   return (
     <Boundary>
@@ -86,45 +78,51 @@ const Header = () => {
 };
 
 const FileList = () => {
-  const files = useRecoilValue(filesSelector);
+  let list = useRecoilValue(filesSelector);
 
   return (
     <section className={styles.fileList}>
-      <RenderFileNav files={files} />
+      {list.length === 1 && (
+        <RenderFileEntries
+          files={list[0][1] as FileEntryList}
+          base="package/"
+        />
+      )}
     </section>
   );
 };
 
-const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
+const RenderFileEntries: FC<{ files: FileEntryList; base: string }> = ({
   files,
-  base = "",
+  base,
 }) => {
-  const entries = useMemo(() => Object.entries(files), [files]);
   const file = useRecoilValueLoadable(fileAtom).valueMaybe();
 
   return (
     <nav>
-      {entries.map(([name, content]) => {
-        if (content === true) {
-          const target = `#${base}${name}`;
-          const h = `#${file}`;
+      {files.map((entry) => {
+        if (Array.isArray(entry)) {
+          const [dirname, dirFiles] = entry;
 
           return (
-            <Link
-              key={name}
-              to={target}
-              className={target === h ? styles.active : ""}
-            >
-              {name}
-            </Link>
+            <details key={dirname}>
+              <summary onMouseDown={onMouseDown}>{dirname}</summary>
+              <RenderFileEntries files={dirFiles} base={base + dirname + "/"} />
+            </details>
           );
         }
 
+        const target = `#${base}${entry}`;
+        const h = `#${file}`;
+
         return (
-          <details key={name} open>
-            <summary onMouseDown={onMouseDown}>{name}</summary>
-            <RenderFileNav files={content} base={base + name + "/"} />
-          </details>
+          <Link
+            key={entry}
+            to={target}
+            className={target === h ? styles.active : ""}
+          >
+            {entry}
+          </Link>
         );
       })}
     </nav>
@@ -132,18 +130,6 @@ const RenderFileNav: FC<{ files: Directory; base?: string }> = ({
 };
 
 const FileContent = () => {
-  const { hash } = useLocation();
-
-  const files = useRecoilValue(packageFiles);
-  const setFile = useSetRecoilState(fileAtom);
-  useEffect(() => {
-    if (hash) {
-      setFile(hash.slice(1));
-    } else {
-      setFile(files.find((f) => f.type === "0")?.name);
-    }
-  }, [hash, files]);
-
   const content = useRecoilValueLoadable(contentSelector).valueMaybe();
 
   const code = content || "";

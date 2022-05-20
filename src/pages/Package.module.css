@@ -52,6 +52,8 @@
 .fileList nav {
     display: flex;
     flex-direction: column;
+}
+.fileList nav nav {
     padding-left: .75em;
     
 }

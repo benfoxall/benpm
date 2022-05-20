@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import "./code.scss";
 import Worker from "./codeWorker.js?worker";
 
@@ -23,13 +23,13 @@ const CodeFormat: FC<{ children: string }> = ({ children }) => {
   }, [children]);
 
   return (
-    <>
+    <div>
       {formatted ? (
         <output dangerouslySetInnerHTML={{ __html: formatted }} />
       ) : (
         children
       )}
-    </>
+    </div>
   );
 };
 

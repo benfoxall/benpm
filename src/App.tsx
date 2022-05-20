@@ -9,7 +9,6 @@ const paths = [
   "package/:name/v/:version",
   "package/@:scope/:name",
   "package/@:scope/:name/v/:version",
-  "dev-:scope-:name-:version",
 ];
 
 function App() {

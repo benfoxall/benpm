@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { atom, selector, useRecoilTransaction_UNSTABLE } from "recoil";
-import { parsePackage, pathsToHeirachy } from "./util/path";
+import { pathsToHeirachy } from "./util/path";
 
 import { inflate } from "pako";
 import untar from "js-untar";
@@ -23,7 +23,18 @@ export function useStateFromParams({ scope, name, version }: Params) {
     [name, scope, version]
   );
 
-  useEffect(() => change(), [name, scope, version]);
+  useEffect(change, [name, scope, version]);
+}
+
+export function useFileFramHash(hash?: string) {
+  const change = useRecoilTransaction_UNSTABLE(
+    ({ set }) =>
+      () =>
+        set(fileAtom, hash?.slice(1)),
+    [hash]
+  );
+
+  useEffect(change, [hash]);
 }
 
 export const scopeAtom = atom<string | undefined>({
@@ -92,7 +103,7 @@ export const versionLatestSelector = selector({
   },
 });
 
-export const packageFiles = selector<TarFile[]>({
+const packageFiles = selector<TarFile[]>({
   key: "package-contents",
   async get({ get }) {
     const meta = get(metaSelector);
