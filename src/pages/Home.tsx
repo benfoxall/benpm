@@ -13,11 +13,11 @@ export const Home = () => {
 
       <p className={styles.instruction}>
         <span>
-          npm<span className={styles.before}>js</span>.com/package/{name}
+          npm<span className={styles.before}>j</span>s.com/package/{name}
         </span>
         <span style={{ marginLeft: "3.5rem" }}>↓</span>
         <Link to={`/package/${name}`}>
-          npm<span className={styles.after}>files</span>.com/package/{name}
+          npm<span className={styles.after}>l</span>s.com/package/{name}
         </Link>
       </p>
     </div>
