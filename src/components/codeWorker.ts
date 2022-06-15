@@ -1,6 +1,14 @@
 import hljs from "highlight.js";
 
 self.onmessage = (e) => {
-  const result = hljs.highlightAuto(e.data);
-  postMessage(result.value);
+  const { code, filename } = e.data;
+
+  const language = filename.split(".").pop();
+
+  try {
+    const result = hljs.highlight(code, { language });
+    postMessage(result.value);
+  } catch (e) {
+    postMessage(code);
+  }
 };

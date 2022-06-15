@@ -1,8 +1,13 @@
 import "./App.css";
+
+import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Home } from "./pages/Home";
-import { Package } from "./pages/Package";
+
+const Package = lazy(() => import("./pages/Package"));
+const Home = lazy(() => import("./pages/Home"));
+
 import { RecoilRoot } from "recoil";
+import { Boundary } from "./util/Boundary";
 
 const paths = [
   "package/:name",
@@ -15,12 +20,14 @@ function App() {
   return (
     <BrowserRouter>
       <RecoilRoot>
-        <Routes>
-          {paths.map((path) => (
-            <Route key={path} path={path} element={<Package />} />
-          ))}
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <Boundary>
+          <Routes>
+            {paths.map((path) => (
+              <Route key={path} path={path} element={<Package />} />
+            ))}
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </Boundary>
       </RecoilRoot>
     </BrowserRouter>
   );

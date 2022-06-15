@@ -26,7 +26,7 @@ export function useStateFromParams({ scope, name, version }: Params) {
   useEffect(change, [name, scope, version]);
 }
 
-export function useFileFramHash(hash?: string) {
+export function useFileFromHash(hash?: string) {
   const change = useRecoilTransaction_UNSTABLE(
     ({ set }) =>
       () =>
@@ -66,7 +66,7 @@ export const identifierSelector = selector({
 
 // ---- versions
 
-export const metaSelector = selector({
+const metaSelector = selector({
   key: "meta",
   async get({ get }) {
     const name = get(identifierSelector);
@@ -80,8 +80,8 @@ export const metaSelector = selector({
   },
 });
 
-export const versionsSelector = selector({
-  key: "versions",
+export const versionListSelector = selector({
+  key: "version-list",
   get({ get }) {
     const meta = get(metaSelector);
     const { modified, created, ...rest }: Record<string, string> =
@@ -96,10 +96,10 @@ export const versionsSelector = selector({
   },
 });
 
-export const versionLatestSelector = selector({
-  key: "version-latest",
+export const actualVersionSelector = selector({
+  key: "version-actual",
   get({ get }) {
-    return get(metaSelector)?.["dist-tags"].latest;
+    return get(versionAtom) || get(metaSelector)?.["dist-tags"].latest;
   },
 });
 
@@ -107,7 +107,7 @@ const packageFiles = selector<TarFile[]>({
   key: "package-contents",
   async get({ get }) {
     const meta = get(metaSelector);
-    const v = get(versionAtom);
+    const v = get(actualVersionSelector);
 
     if (!v) return [];
 
@@ -141,8 +141,6 @@ export const contentSelector = selector({
   get({ get }) {
     const files = get(packageFiles);
     const file = get(fileAtom);
-
-    // let first = files.find((file) => file.type === "0");
 
     for (const f of files) {
       if (file === f.name) {

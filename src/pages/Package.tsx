@@ -1,17 +1,22 @@
 import { FC, MouseEventHandler, Suspense, useEffect, lazy } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import {
+  generatePath,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import { Link } from "react-router-dom";
 import { useRecoilValueLoadable, useRecoilValue } from "recoil";
 import {
-  useFileFramHash,
+  useFileFromHash,
   useStateFromParams,
   contentSelector,
   identifierSelector,
   fileAtom,
   filesSelector,
   versionAtom,
-  versionLatestSelector,
-  versionsSelector,
+  // versionLatestSelector,
+  versionListSelector,
 } from "../state";
 import { Boundary } from "../util/Boundary";
 import { FileEntryList } from "../util/path";
@@ -29,7 +34,7 @@ export const Package = () => {
   useStateFromParams(params);
 
   const { hash } = useLocation();
-  useFileFramHash(hash);
+  useFileFromHash(hash);
 
   return (
     <Boundary>
@@ -48,19 +53,19 @@ const Header = () => {
   const identifier = useRecoilValue(identifierSelector);
   const version = useRecoilValue(versionAtom);
 
-  const latest = useRecoilValueLoadable(versionLatestSelector).valueMaybe();
-  const versions = useRecoilValueLoadable(versionsSelector).valueMaybe();
+  // const latest = useRecoilValueLoadable(versionLatestSelector).valueMaybe();
+  const versions = useRecoilValueLoadable(versionListSelector).valueMaybe();
 
   // replace version in url
   const { hash } = useLocation();
   const navigate = useNavigate();
-  const setVersion = (version: string) =>
-    navigate(`/package/${identifier}/v/${version}${hash || ""}`);
+  // const setVersion = (version: string) =>
+  //   navigate(`/package/${identifier}/v/${version}${hash || ""}`);
 
   // redirect to latest version
-  useEffect(() => {
-    if (latest && !version) setVersion(latest);
-  }, [version, latest]);
+  // useEffect(() => {
+  //   if (latest && !version) setVersion(latest);
+  // }, [version, latest]);
 
   const versionList = versions || (version && [version]) || [];
 
@@ -68,7 +73,12 @@ const Header = () => {
     <header className={styles.head}>
       <h1>{identifier || "?"}</h1>
 
-      <select value={version} onChange={(e) => setVersion(e.target.value)}>
+      <select
+        value={version}
+        onChange={(e) =>
+          navigate(`/package/${identifier}/v/${e.target.value}${hash || ""}`)
+        }
+      >
         {versionList.map((version) => (
           <option key={version}>{version}</option>
         ))}
@@ -131,6 +141,7 @@ const RenderFileEntries: FC<{ files: FileEntryList; base: string }> = ({
 
 const FileContent = () => {
   const content = useRecoilValueLoadable(contentSelector).valueMaybe();
+  const file = useRecoilValueLoadable(fileAtom).valueMaybe() || ".txt";
 
   const code = content || "";
 
@@ -139,10 +150,12 @@ const FileContent = () => {
       <pre>
         <code>
           <Suspense fallback={<>{code}</>}>
-            <CodeFormat>{code}</CodeFormat>
+            <CodeFormat filename={file}>{code}</CodeFormat>
           </Suspense>
         </code>
       </pre>
     </main>
   );
 };
+
+export default Package;

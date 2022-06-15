@@ -24,6 +24,8 @@ export const Home = () => {
   );
 };
 
+export default Home;
+
 function randomPackage() {
   return packages[Math.floor(Math.random() * packages.length)];
 }

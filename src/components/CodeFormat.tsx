@@ -1,18 +1,21 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, Fragment, useEffect, useRef, useState } from "react";
 import "./code.scss";
 import Worker from "./codeWorker.js?worker";
 
 const worker = new Worker();
 
-const CodeFormat: FC<{ children: string }> = ({ children }) => {
+const CodeFormat: FC<{ children: string; filename: string }> = ({
+  children,
+  filename,
+}) => {
   const [formatted, setFormatted] = useState<string>();
 
   useEffect(() => {
     setFormatted(undefined);
-    if (!children) return;
+    if (!children || !filename) return;
 
     // todo, use pool
-    worker.postMessage(children);
+    worker.postMessage({ code: children, filename });
     worker.addEventListener(
       "message",
       ({ data }) => {
@@ -20,16 +23,18 @@ const CodeFormat: FC<{ children: string }> = ({ children }) => {
       },
       { once: true }
     );
-  }, [children]);
+  }, [children, filename]);
 
   return (
-    <div>
-      {formatted ? (
-        <output dangerouslySetInnerHTML={{ __html: formatted }} />
-      ) : (
-        children
-      )}
-    </div>
+    <pre>
+      <code>
+        {formatted ? (
+          <div dangerouslySetInnerHTML={{ __html: formatted }} />
+        ) : (
+          children
+        )}
+      </code>
+    </pre>
   );
 };
 
