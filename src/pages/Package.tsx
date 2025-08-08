@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, Suspense, lazy } from "react";
+import { type FC, type MouseEventHandler, Suspense, lazy } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useAtomValue } from "jotai";
@@ -13,7 +13,7 @@ import {
   versionListSelector,
 } from "../state";
 import { Boundary } from "../util/Boundary";
-import { FileEntryList } from "../util/path";
+import type { FileEntryList } from "../util/path";
 import styles from "./Package.module.css";
 
 const CodeFormat = lazy(() => import("../components/CodeFormat"));
