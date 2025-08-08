@@ -14,12 +14,10 @@ export const Home = () => {
       <p>Some tools for viewing packages</p>
 
       <p className={styles.instruction}>
-        <span>
-          npm<span className={styles.before}>j</span>s.com/package/{name}
-        </span>
+        <span>npmjs.com/package/{name}</span>
         <span style={{ marginLeft: "3.5rem" }}>↓</span>
         <Link to={`/package/${name}`}>
-          npm<span className={styles.after}>l</span>s.com/package/{name}
+          {document.location.host}/package/{name}
         </Link>
       </p>
     </div>
