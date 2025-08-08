@@ -6,8 +6,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:e2e": "playwright test"
+    "test": "vitest run && playwright test",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
