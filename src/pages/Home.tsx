@@ -7,9 +7,11 @@ export const Home = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Npm files</h1>
+      <h1 className={styles.title}>
+        Be<strong>npm</strong>
+      </h1>
 
-      <p>View contents of npm packages</p>
+      <p>Some tools for viewing packages</p>
 
       <p className={styles.instruction}>
         <span>
