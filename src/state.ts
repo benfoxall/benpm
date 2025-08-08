@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { atom, selector, useRecoilTransaction_UNSTABLE } from "recoil";
+import { atom, useSetAtom } from "jotai";
 import { pathsToHeirachy } from "./util/path";
 
 import { inflate } from "pako";
@@ -13,141 +13,117 @@ interface Params {
 
 // sync state from url pattern
 export function useStateFromParams({ scope, name, version }: Params) {
-  const change = useRecoilTransaction_UNSTABLE(
-    ({ set }) =>
-      () => {
-        set(scopeAtom, scope);
-        set(nameAtom, name);
-        set(versionAtom, version);
-      },
-    [name, scope, version]
-  );
+  const setScope = useSetAtom(scopeAtom);
+  const setName = useSetAtom(nameAtom);
+  const setVersion = useSetAtom(versionAtom);
 
-  useEffect(change, [name, scope, version]);
+  useEffect(() => {
+    setScope(scope);
+    setName(name);
+    setVersion(version);
+  }, [name, scope, version, setScope, setName, setVersion]);
 }
 
 export function useFileFromHash(hash?: string) {
-  const change = useRecoilTransaction_UNSTABLE(
-    ({ set }) =>
-      () =>
-        set(fileAtom, hash?.slice(1)),
-    [hash]
-  );
+  const setFile = useSetAtom(fileAtom);
 
-  useEffect(change, [hash]);
+  useEffect(() => {
+    setFile(hash?.slice(1));
+  }, [hash, setFile]);
 }
 
-export const scopeAtom = atom<string | undefined>({
-  key: "scope",
-});
-export const nameAtom = atom<string | undefined>({
-  key: "name",
-});
-export const versionAtom = atom<string | undefined>({
-  key: "version",
-});
+export const scopeAtom = atom<string | undefined>(undefined);
+export const nameAtom = atom<string | undefined>(undefined);
+export const versionAtom = atom<string | undefined>(undefined);
 
-export const fileAtom = atom<string | undefined>({
-  key: "file",
-  default: undefined,
-});
+export const fileAtom = atom<string | undefined>(undefined);
 
-export const identifierSelector = selector({
-  key: "identifier",
-  get({ get }) {
-    const scope = get(scopeAtom);
-    const name = get(nameAtom);
+export const identifierSelector = atom((get) => {
+  const scope = get(scopeAtom);
+  const name = get(nameAtom);
 
-    if (scope && name) return `@${scope}/${name}`;
+  if (scope && name) return `@${scope}/${name}`;
 
-    return name;
-  },
+  return name;
 });
 
 // ---- versions
 
-const metaSelector = selector({
-  key: "meta",
-  async get({ get }) {
-    const name = get(identifierSelector);
+const metaSelector = atom(async (get) => {
+  const name = get(identifierSelector);
 
-    if (name) {
-      const res = await fetch(`https://registry.npmjs.org/${name}`);
-      return res.json();
+  if (name) {
+    const res = await fetch(`https://registry.npmjs.org/${name}`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch package meta for ${name}`);
     }
+    return res.json();
+  }
 
-    return null;
-  },
+  return null;
 });
 
-export const versionListSelector = selector({
-  key: "version-list",
-  get({ get }) {
-    const meta = get(metaSelector);
-    const { modified, created, ...rest }: Record<string, string> =
-      meta?.time || {};
+export const versionListSelector = atom(async (get) => {
+  const meta = await get(metaSelector);
+  if (!meta) return [];
+  const { modified, created, ...rest }: Record<string, string> =
+    meta?.time || {};
 
-    // order versions by timing
-    const versions = Object.entries(rest)
-      .sort(([, a], [, b]) => new Date(b).getTime() - new Date(a).getTime())
-      .map(([version]) => version);
+  // order versions by timing
+  const versions = Object.entries(rest)
+    .sort(([, a], [, b]) => new Date(b).getTime() - new Date(a).getTime())
+    .map(([version]) => version);
 
-    return versions;
-  },
+  return versions;
 });
 
-export const actualVersionSelector = selector({
-  key: "version-actual",
-  get({ get }) {
-    return get(versionAtom) || get(metaSelector)?.["dist-tags"].latest;
-  },
+export const actualVersionSelector = atom(async (get) => {
+  const meta = await get(metaSelector);
+  if (!meta) return undefined;
+  return get(versionAtom) || meta?.["dist-tags"].latest;
 });
 
-const packageFiles = selector<TarFile[]>({
-  key: "package-contents",
-  async get({ get }) {
-    const meta = get(metaSelector);
-    const v = get(actualVersionSelector);
+const packageFiles = atom(async (get) => {
+  const meta = await get(metaSelector);
+  const v = await get(actualVersionSelector);
 
-    if (!v) return [];
+  if (!v || !meta) return [];
 
-    try {
-      const tarball = meta.versions[v].dist.tarball;
+  try {
+    const tarball = meta.versions[v].dist.tarball;
 
-      const res = await fetch(tarball);
+    const res = await fetch(tarball);
 
-      const buf = await res.arrayBuffer();
-      const cont = inflate(new Uint8Array(buf));
-      return untar(cont.buffer);
-    } catch (e) {
-      console.error(e);
+    const buf = await res.arrayBuffer();
+    const cont = inflate(new Uint8Array(buf));
+    return untar(cont.buffer);
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
+});
+
+export const filesSelector = atom(async (get) => {
+  const files = await get(packageFiles);
+  const paths = files.map((file: any) => file.name);
+
+  return pathsToHeirachy(paths);
+});
+
+export const contentSelector = atom(async (get) => {
+  const files = await get(packageFiles);
+  const file = get(fileAtom);
+
+  for (const f of files) {
+    if (file === f.name) {
+      return new TextDecoder().decode(f.buffer);
     }
-    return [];
-  },
+  }
+
+  return null;
 });
 
-export const filesSelector = selector({
-  key: "files-dev",
-  get({ get }) {
-    const files = get(packageFiles);
-    const paths = files.map((file) => file.name);
-
-    return pathsToHeirachy(paths);
-  },
-});
-
-export const contentSelector = selector({
-  key: "content",
-  get({ get }) {
-    const files = get(packageFiles);
-    const file = get(fileAtom);
-
-    for (const f of files) {
-      if (file === f.name) {
-        return new TextDecoder().decode(f.buffer);
-      }
-    }
-
-    return null;
-  },
-});
+interface TarFile {
+  name: string;
+  buffer: ArrayBuffer;
+}

@@ -1,12 +1,7 @@
-import { FC, MouseEventHandler, Suspense, useEffect, lazy } from "react";
-import {
-  generatePath,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router";
+import { FC, MouseEventHandler, Suspense, lazy } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useRecoilValueLoadable, useRecoilValue } from "recoil";
+import { useAtomValue } from "jotai";
 import {
   useFileFromHash,
   useStateFromParams,
@@ -15,7 +10,6 @@ import {
   fileAtom,
   filesSelector,
   versionAtom,
-  // versionLatestSelector,
   versionListSelector,
 } from "../state";
 import { Boundary } from "../util/Boundary";
@@ -50,11 +44,10 @@ export const Package = () => {
 };
 
 const Header = () => {
-  const identifier = useRecoilValue(identifierSelector);
-  const version = useRecoilValue(versionAtom);
+  const identifier = useAtomValue(identifierSelector);
+  const version = useAtomValue(versionAtom);
 
-  // const latest = useRecoilValueLoadable(versionLatestSelector).valueMaybe();
-  const versions = useRecoilValueLoadable(versionListSelector).valueMaybe();
+  const versions = useAtomValue(versionListSelector);
 
   // replace version in url
   const { hash } = useLocation();
@@ -88,7 +81,7 @@ const Header = () => {
 };
 
 const FileList = () => {
-  let list = useRecoilValue(filesSelector);
+  let list = useAtomValue(filesSelector);
 
   return (
     <section className={styles.fileList}>
@@ -106,7 +99,7 @@ const RenderFileEntries: FC<{ files: FileEntryList; base: string }> = ({
   files,
   base,
 }) => {
-  const file = useRecoilValueLoadable(fileAtom).valueMaybe();
+  const file = useAtomValue(fileAtom);
 
   return (
     <nav>
@@ -140,8 +133,8 @@ const RenderFileEntries: FC<{ files: FileEntryList; base: string }> = ({
 };
 
 const FileContent = () => {
-  const content = useRecoilValueLoadable(contentSelector).valueMaybe();
-  const file = useRecoilValueLoadable(fileAtom).valueMaybe() || ".txt";
+  const content = useAtomValue(contentSelector);
+  const file = useAtomValue(fileAtom) || ".txt";
 
   const code = content || "";
 

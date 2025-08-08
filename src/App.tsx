@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 const Package = lazy(() => import("./pages/Package"));
 const Home = lazy(() => import("./pages/Home"));
 
-import { RecoilRoot } from "recoil";
 import { Boundary } from "./util/Boundary";
 
 const paths = [
@@ -19,16 +18,14 @@ const paths = [
 function App() {
   return (
     <BrowserRouter>
-      <RecoilRoot>
-        <Boundary>
-          <Routes>
-            {paths.map((path) => (
-              <Route key={path} path={path} element={<Package />} />
-            ))}
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </Boundary>
-      </RecoilRoot>
+      <Boundary>
+        <Routes>
+          {paths.map((path) => (
+            <Route key={path} path={path} element={<Package />} />
+          ))}
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </Boundary>
     </BrowserRouter>
   );
 }
