@@ -6,7 +6,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "mocha"
+    "test": "mocha",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@types/mocha": "^9.1.1",
