@@ -26,15 +26,13 @@ const CodeFormat: FC<{ children: string; filename: string }> = ({
   }, [children, filename]);
 
   return (
-    <pre>
-      <code>
-        {formatted ? (
-          <div dangerouslySetInnerHTML={{ __html: formatted }} />
-        ) : (
-          children
-        )}
-      </code>
-    </pre>
+    <>
+      {formatted ? (
+        <div dangerouslySetInnerHTML={{ __html: formatted }} />
+      ) : (
+        children
+      )}
+    </>
   );
 };
 
