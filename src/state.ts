@@ -123,7 +123,3 @@ export const contentSelector = atom(async (get) => {
   return null;
 });
 
-interface TarFile {
-  name: string;
-  buffer: ArrayBuffer;
-}

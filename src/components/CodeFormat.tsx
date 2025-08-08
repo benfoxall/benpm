@@ -1,4 +1,4 @@
-import { FC, Fragment, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import "./code.scss";
 import Worker from "./codeWorker.js?worker";
 

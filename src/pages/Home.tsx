@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./Home.module.scss";
 
 export const Home = () => {
-  const [name, setName] = useState(randomPackage);
+  const [name] = useState(randomPackage);
 
   return (
     <div className={styles.container}>
